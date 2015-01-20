@@ -16,13 +16,12 @@ CUDA_INSTALL_PATH= /opt/common/cuda/cuda-5.5.22
 OPT = -O3 -I./uthash/ -I/scratch0/huah/thrust/
 NVCCFLAGS = $(OPT) -use_fast_math -I. -I$(CUDA_INSTALL_PATH)/include 
 ```
-The above four variables in MAKEFILE need to be updated accoring to your runnning enviroment. For example, the CUDA library install path ($CUDA_INSTALL_PATH) needs to be set to the corresponding path on your GPU server; $OPT needs thrust library directory's path; The computing version of your GPU device should be set (For example, Tesla K20 is 3.5 therfore it is -arch=compute_35), etc. 
+- The above four variables in MAKEFILE need to be updated accoring to your runnning enviroment. For example, the CUDA library install path ($CUDA_INSTALL_PATH) needs to be set to the corresponding path on your GPU server; $OPT needs thrust library directory's path; The computing version of your GPU device should be set (For example, Tesla K20 is 3.5 therfore it is -arch=compute_35), etc. 
 
-- In the main directory please compile the codes with this:
+- In the main directory please compile the codes as below. Probably will see lots of warnings please just ignore those as long as there are no errors. If errors that could probably be CUDA library related issues, Please update your cuda driver and library to the latest version.
 ```
 make
 ```
-Probably will see lots of warnings but just ignore those as long as there are no errors. If errors probably that could be enviroment settings/configuration poblems. Can let me know if need help maybe I have seen some of weirdo before... Usually CUDA library related issues if compilation errors.
 
 - If you can get this executable file under bin/ directory, that means compilation is good:
 ```
@@ -53,10 +52,8 @@ gpugrammar_temp
 Start Printing Gappy Phrases...
 ```
 - Once done just go check the  gpugrammar_temp directory and there should be bunch of grammar files for queries (one file for each query).
-- Troubleshooting. Common installation problems are mainly from CUDA memory allocation/access side, causing weido memory problems during running. We encourage you to use the latest GPU driver and CUDA library. 
-- We will further update our codes to make it easier to use.
-
-
+- Troubleshooting. Common installation problems are mainly from CUDA memory allocation/access side, causing weido memory problems during running. We encourage you to use the latest GPU driver and CUDA library.
+- We will further update our codes significantly in our next release to make this code easier to use.. Stay tuned.
 
 Thanks.
 
