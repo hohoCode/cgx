@@ -39,26 +39,22 @@ fbis.aligned
 lex.bin 
 gpugrammar_temp
 ```
-Please provide the following addresses as input arguments:
-  1. First argument is the address of chinese side of parallel corpus.
-  2. Second: query file (each line is a query)
-  3. Third: english side of FBIS data
-  4. Four: Alignment file
-  5. Five: lexical bin (which is directly from cdec precomputation step on FBIS data, just reuse its output for lexical features)
-  6. Six: the output directory address. (this is the directory address to hold the output grammar files. Each query will output one grammar file. So all grammars will be in the directory). If this directory does not exist yet please create this directory first.
+- Please provide the following as input arguments:
+    1. First argument is the address of chinese side of parallel corpus.
+    2. Second: query file (each line is a query)
+    3. Third: english side of FBIS data
+    4. Four: Alignment file
+    5. Five: lexical bin (which is directly from cdec precomputation step on FBIS data, just reuse its output for lexical features)
+    6. Six: the output directory address. (this is the directory address to hold the output grammar files. Each query will output one grammar file. So all grammars will be in the directory). If this directory does not exist yet please create this directory first.
+    7. Note the above example just assume these files are on the same directory, while actually they can be anywhere just specify the correct address. The above files are having the same file format as before.
 
-Note the above example just assume these files are on the same directory, while actually they can be anywhere just specify the correct address. The above files are having the same file format as before.
-
-- So in the end if you see output log is like this:
+- So in the end if you see output log is like the below, which means everything has been done and it is in the last printing step ('IO step' as in the paper):
 ```
 Start Printing Gappy Phrases...
 ```
-That usually means everything has been done and it is in the last printing step ('IO step' as in the paper).
-
 - Once done just go check the  gpugrammar_temp directory and there should be bunch of grammar files for queries (one file for each query).
-
 - Troubleshooting. Common installation problems are mainly from CUDA memory allocation/access side, causing weido memory problems during running. We encourage you to use the latest GPU driver and CUDA library. 
-- We will further update our codes so to make it easier to use.
+- We will further update our codes to make it easier to use.
 
 
 
