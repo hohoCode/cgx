@@ -1,8 +1,10 @@
 # cgx
-UltraFast GPU Grammar Extractor for Statistical Machine Translation
 
-INSTALLATION Instruction
-------------------------------------------------------------------
+CUDA Grammar eXtractor for Statistical Machine Translation
+
+Installation
+------------
+
 - please download thrust GPU library, which actually just needs git clone and that is it. Address is here: https://github.com/thrust/thrust
 
 - Install CUDA library and CUDA driver on your machine. Please follow the instruction on Nvidia website:
@@ -10,7 +12,8 @@ https://developer.nvidia.com/cuda-zone
 
 - This program requires the GPU device to have at least 4GB GPU memory. The codes work with Kephler/Fermi/pre-Fermi architecture GPUs.
 
-- In provided MAKEFILE file, we have:
+- In provided `Makefile`, we have:
+
 ```
 NVCC =nvcc -arch=compute_35 -code=sm_35
 CUDA_INSTALL_PATH= /opt/common/cuda/cuda-5.5.22
@@ -18,7 +21,7 @@ OPT = -O3 -I./uthash/ -I/scratch0/huah/thrust/
 NVCCFLAGS = $(OPT) -use_fast_math -I. -I$(CUDA_INSTALL_PATH)/include 
 ```
 
-- The above four variables in MAKEFILE need to be updated according to your runnning enviroment. For example, the CUDA library install path ($CUDA_INSTALL_PATH) needs to be set to the corresponding path on your GPU machine; $OPT needs thrust library directory's path; so is the computing version of your GPUs (For example, Tesla K20 is 3.5 therfore it is -arch=compute_35); etc. 
+- The above four variables in MAKEFILE need to be updated according to your runnning enviroment. For example, the CUDA library install path `CUDA_INSTALL_PATH` needs to be set to the corresponding path on your GPU machine; `OPT` needs thrust library directory's path; so is the computing version of your GPUs (For example, Tesla K20 is 3.5 therfore it is `-arch=compute_35`); etc. 
 
 - In the main directory please compile the codes as below. Probably you will see lots of warnings please just ignore those as long as there are no errors. If errors that could probably be CUDA library related issues, please update your cuda driver and library to the latest version.
 ```
