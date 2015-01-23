@@ -70,9 +70,13 @@ gpugrammar_temp
 ```
 Start Printing Gappy Phrases...
 ```
+
 - Once done just go check the gpugrammar_temp directory and there should be bunch of grammar files for queries (one file for each query).
+
 - Short description of running process: first of all read in parallel corpus and queries, then construct suffix array and auxiliary data structures for indexing, then do GPU-based gappy phrase lookup on suffix array and hierarchical grammar extraction, finally calculate features and output. Please refer to papers for more details on each pass. 
+
 - Currently the running of this program includes one-time costs (e.g. suffix array construction/precomputation) and real hierarchical grammar extraction costs. Therefore depending on your parallel corpus typically this can take some very acceptable extra time before real GPU grammar extraction starts. This program will get updates and such one-time costs will be separated in future release.
+
 - Troubleshooting. Common installation problems are mainly from CUDA memory allocation/access side, causing weido memory problems during running. We encourage you to use the latest GPU driver and CUDA library.
 
 Thanks.
