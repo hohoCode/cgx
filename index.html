@@ -29,7 +29,7 @@
       </header>
       <section>
         <h1>
-<a id="cgx" class="anchor" href="#cgx" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cgx</h1>
+<a id="cgx" class="anchor" href="#cgx" aria-hidden="true"><span class="octicon octicon-link"></span></a>cgx</h1>
 
 <p>Fast CUDA Grammar eXtractor for Statistical Machine Translation</p>
 
@@ -83,6 +83,15 @@ OPT = -O3 -I./uthash/ -I/scratch0/huah/thrust/
 
 <pre><code>bin/strmatchcuda
 </code></pre>
+
+<ul>
+<li>Though our Cgx grammar extractor is independent technicially from the popular SMT system <code>cdec</code>, currently you may still need its SMT decoder to use our generated hierarchical grammars and also its intermidiate output (lexical file as shown below), therefore please install <code>cdec</code> following its instructions and tutorials here:
+<a href="http://www.cdec-decoder.org/guide/">http://www.cdec-decoder.org/guide/</a>
+</li>
+</ul>
+
+<h2>
+<a id="running" class="anchor" href="#running" aria-hidden="true"><span class="octicon octicon-link"></span></a>Running</h2>
 
 <ul>
 <li>Command to run (one toy example is provided: hansards French-English parallel data under <code>./toy</code> directory):</li>
