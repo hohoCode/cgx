@@ -47,6 +47,13 @@ make
 bin/strmatchcuda
 ```
 
+- Though our Cgx grammar extractor is independent technicially from the popular SMT system `cdec`, currently you may still need its SMT decoder to use our generated hierarchical grammars and also its intermidiate output (lexical file as shown below), therefore please install `cdec` following its instructions and tutorials here:
+http://www.cdec-decoder.org/guide/
+
+
+Running
+------------
+
 - Command to run (one toy example is provided: hansards French-English parallel data under `./toy` directory):
 ```
 ./bin/strmatchcuda 
