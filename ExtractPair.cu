@@ -110,9 +110,7 @@ __host__ __device__ bool consistent(int start, int end, uint8_t* L_target, uint8
 	for(k = start; k <= end && ok; k++){
 		L = L_target[k];
 		R = R_target[k];
-		/*if(start_chk == 9283611 && end_chk == 9283613){
-		  printf("current target index %d - Ltarget %d - Rtarget %d - min_L %d - max_R %d\n", k, L, R, min_L, max_R );
-		  }*/
+		
 		if (L==255 || R == 255){
 			ok = true; //Change fixes original false to remove non-recog symbols.
 		} else if (k == start){
@@ -127,11 +125,8 @@ __host__ __device__ bool consistent(int start, int end, uint8_t* L_target, uint8
 			}
 		} 
 	}
-	// printf("min_L %d - max_R %d - source start %d - real source start %d - real source end %d - target start %d end %d || compare startpos_source+min_L %d ?= start_chk %d | startpos_source+max_R %d ?= end_chk %d\n", min_L, max_R, startpos_source, start_chk, end_chk, start, end, startpos_source+min_L, start_chk, startpos_source+max_R, end_chk);
+	
 	if(startpos_source+min_L != start_chk || startpos_source+max_R != end_chk){
-		/*if (min_L == 0 || start_chk == startpos_source ){
-		  printf("min_L %d - max_R %d - source start %d - real source start %d - real source end %d - target start %d end %d\n", min_L, max_R, startpos_source, start_chk, end_chk, start,end);
-		  }*/
 		ok = false;
 	}
 	return ok;
@@ -167,7 +162,7 @@ __device__ bool checkBoundaryFast(//Need to return extra info, but no target che
 			L = 255;     
 		} else if (k == start){		
 			(*tempind) = k - ((temp >> 8) & 0xFF) - 1 ;	
-			//printf("L %u R %u - BK x %d y %d - bnum %d - tempind %d - k %d - Pi %u\n", L, R, blockIdx.x, blockIdx.y, bnum, tempind, k, ((RLP[k] >> 8) & 0xFF));
+			
 			if ((*tempind) == -1){
 				(*sen_target_begin) = 0;
 			} else {
@@ -192,11 +187,6 @@ __device__ bool checkBoundaryFast(//Need to return extra info, but no target che
 
 		//This consistent checking can be turned off.
 		//printf("target start %d - tar end %d - sour start %d - sour end %d\n", ss, tt, current_str, t);
-		/*return consistent(
-				min_L + *sen_target_begin,  
-				max_R + *sen_target_begin, 
-				L_tar, R_tar, start, 
-				ender, *tempind);		*/
 		return true;
 	}
 	
@@ -253,8 +243,6 @@ __device__ bool checkBoundaryFast2(//Normal interface, but no target checking ne
 
 	if (min_L <= max_R && max_R - min_L < MAX_rule_span){
 		tempind++;
-
-		//printf("target start %d - tar end %d - sour start %d - sour end %d\n", ss, tt, current_str, t);
 		return true;//consistent( (*target_start),  (*target_end), L_tar, R_tar, start, ender, tempind);		
 	}			
 
@@ -304,8 +292,7 @@ __device__ uint8_t checkBoundary( //Target checking needed, and need to tell err
 				return 4;
 			}			
 			//Cannot do this to prestop the iteration, still need min_L and max_R
-			/*k = ender + 1; 
-			return false;*/
+
 			if (k == start){		
 				tempind = k - ((temp >> 8) & 0xFF) - 1 ;				
 				if (tempind == -1){
@@ -344,7 +331,6 @@ __device__ uint8_t checkBoundary( //Target checking needed, and need to tell err
 	} else if (min_L <= max_R && max_R - min_L < MAX_rule_span){
 		tempind++;
 
-		//printf("target start %d - tar end %d - sour start %d - sour end %d\n", ss, tt, current_str, t);
 		if(consistent( (*target_start),  (*target_end), L_tar, R_tar, start, ender, 
 		tempind)){
 			return 1; //true
@@ -877,16 +863,6 @@ __global__ void extractConsistentPairs_OneGap(
 							}
 						}
 
-						/*if(oneBlockId == 121){
-							printf("aXbX||i %d -> next %d | right %d | target_start %d target_end %d | originalGapStart %d originalGapEnd %d | gap2_start %d gap2_end %d | startSA %d EndSA %d | current_str %d ender %d | threadx %d dis %d\n", 
-								i, next, right,
-								target_start, target_end,
-								originalGapStart, originalGapEnd,
-								gap2_start, gap2_end,
-								startSA, endSA,
-								current_str, ender, threadx, dis);
-						}*/
-						
 						if(next){
 							nextpos = atomicAdd(counter_2gap, 1);
 							twoGapRule_ab_d[nextpos].ref_str_start = target_start;
@@ -2808,45 +2784,22 @@ __global__ void extractConsistentPairs_Gappy(
 				//fprintf(stderr, "Generating Blocks of Results %d - S%d E%d\n", qryindex,qryset->qrysoffsettok[qryindex], end);
 
 				for (j = qryset->qrysoffsettok[qryindex]; j < end; j++) {
-					/*if (go == NULL){
-						//utarray_new(go, &ut_int_icd);
-						go = new vector<unsigned int>();
-					}*/
 					//fprintf(stderr, "Generating %d - longest %d\n", j, qryresult[j].longestmatch);
 					map<string, int>::iterator iter;
 					if (qryresult[j].longestmatch > 0) { /// length is 1
-						//fprintf(stderr,"Yoshi 1.7\n");
 						sprintf(str1,"%d",qryresult[j].up);
-						//fprintf(stderr,"Yoshi 1.3\n");
 						sprintf(str2,"|%d|1",qryresult[j].down);
 						strcat(str1,str2);
-						//fprintf(stderr,"Yoshi 1.2\n");
 						string checking(str1);
-						//fprintf(stderr,"Yoshi 1.21 %s|| from str1 %s||\n", checking.c_str(), str1);
 						iter = checkD.find(checking);///////HERE!
-						//fprintf(stderr,"Yoshi 1.1\n");
-						//HASH_FIND_STR(cutdup, str1, sss);            
 						if(iter == checkD.end()){
-							//fprintf(stderr,"Yoshi 1\n");
 							tmp_blocks[*global].start = qryresult[j].up;
 							tmp_blocks[*global].end = qryresult[j].down;
 							tmp_blocks[*global].string_start = ref->sa[qryresult[j].up];
 							tmp_blocks[*global].matchlen = 1;
-							//fprintf(stderr,"Yoshi 1.5 Sure?\n");
 							////////////////////
 							strcpy(str_source,"");
 							for(int spane = qryresult[j].up; spane <  1+qryresult[j].up; spane++){
-								/*struct my_struct *s1;
-								HASH_FIND_INT(intchar, &ref->str[ref->sa[spane]], s1);
-								if(!s1){			   
-									fprintf(stderr, "Source CANNOT FIND this WORD! - IMPOSSIBLE! %d\n", ref->str[j]);		
-									exit(0);						
-								}
-								
-								if(strcmp(s1->name, vocabulary[ref->str[ref->sa[spane]]])!=0){
-								  fprintf(stderr, "In Gen Blocks: s1->name %s | direct access %s\n", s1->name, vocabulary[ref->str[ref->sa[spane]]]);
-								}
-								*/
 								if (spane == qryresult[j].up){
 									sprintf(sname,"%s", vocabulary[ref->str[ref->sa[spane]]]);
 								} else {
@@ -2855,23 +2808,15 @@ __global__ void extractConsistentPairs_Gappy(
 								//fprintf(stderr, "\t\tPre Sname: %s\n", sname);
 								strcat(str_source, sname);			
 							}	
-							//fprintf(stderr,"Yoshi 1.51 Sure?\n");
-							//fprintf(stderr, "String %s\n", str_source);
+
 							char* str_ss = /*new char[strlen(str_source)+1]; */ (char*)malloc(sizeof(char)*(strlen(str_source)+1));
-							//fprintf(stderr,"Yoyo shi 1.50 Sure?\n");
 							copy(str_source, str_source+strlen(str_source)+1 , str_ss);
-							//fprintf(stderr,"Yoyo shi 1.55 Sure? %d -> %s\n", *global, str_ss);
 							(*sourceName)[*global] = str_ss;
 							/////////////////
-							//fprintf(stderr,"Continous blockId %d, string %s\n", *global, str_ss);
 							go.push_back(*global);
-							//utarray_push_back(go, global);//HERE	
 							(*global)++;
-							//fprintf(stderr,"Yoyo shi 1.52 Sure?\n");
 							totalcheck += qryresult[j].down - qryresult[j].up;
-							//fprintf(stderr,"Yoyo shi 1.515 Sure?\n");
 							checkD.insert(make_pair(checking, (*global)-1));
-							//fprintf(stderr,"Yoyo shi 1.53 Sure?\n");
 							pair<map<int, int>::iterator, bool> res = removalDUP.insert(make_pair((*global)-1, -1));
 						} else {
 							pair<map<int, int>::iterator, bool> res = removalDUP.insert(make_pair(iter->second, -1));
@@ -2910,16 +2855,7 @@ __global__ void extractConsistentPairs_Gappy(
 								int gogogo = ref->sa[qryset->result_connect[cc].up];
 								//fprintf(stderr,"Yoyo shi 1.5999 Sure?\n");
 								for(int spane = gogogo; spane < ct + gogogo ; spane++){
-									/*struct my_struct *s1;
-									HASH_FIND_INT( intchar, &ref->str[spane], s1);
-									if(!s1){			   
-										fprintf(stderr, "Source CANNOT FIND this WORD! - IMPOSSIBLE! %d\n", ref->str[j]);		
-										exit(0);						
-									}
 
-									if(strcmp(s1->name, vocabulary[ref->str[spane]])!=0){
-								  		fprintf(stderr, "In Gen Blocks: s1->name %s | direct access %s\n", s1->name, vocabulary[ref->str[spane]]);
-									}*/
 									if (spane == gogogo){
 										sprintf(sname,"%s",vocabulary[ref->str[spane]]);
 									} else {
@@ -2928,20 +2864,14 @@ __global__ void extractConsistentPairs_Gappy(
 									//fprintf(stderr, "\t\tPre Sname: %s\n", sname);
 									strcat(str_source, sname);			
 								} 
-								//fprintf(stderr, "String %s\n", str_source);
+
 								char* str_ss = /*new char[strlen(str_source)+1]*/ (char*)malloc(sizeof(char)*(strlen(str_source)+1));
-								//fprintf(stderr,"Yoyo shi 2.53 Sure?\n");
 								copy(str_source, str_source+strlen(str_source)+1 , str_ss); //memcpy((void*)str_ss, str_source, strlen(str_source)+1);
-								//fprintf(stderr,"Yoyo shi 2.55 Sure? %d -> %s\n", *global, str_ss);
 								(*sourceName)[*global] = str_ss;
-								//fprintf(stderr,"Continous blockId %d, string %s\n", *global, str_ss);
-								//fprintf(stderr,"Yoyo shi 2.57 Sure? %d %d\n", *global, (go==NULL));
 								///////////////////////////								
 								//utarray_push_back(go, global);///HERE
 								go.push_back(*global);
-								//fprintf(stderr,"Yoyo shi 2.59 Sure?\n");
 								(*global)++;
-								//fprintf(stderr, "INSIDE second block 5\n");
 								totalcheck += qryset->result_connect[cc].down - qryset->result_connect[cc].up;
 								checkD.insert(make_pair(checking, (*global)-1));
 								pair<map<int, int>::iterator, bool> res = removalDUP.insert(make_pair((*global) - 1, -1));
@@ -2961,16 +2891,7 @@ __global__ void extractConsistentPairs_Gappy(
 			}
 			qryglobal[qryindex] = go;
 			removalDUP.clear();
-			/*if (qryindex == qryset->qryscount - 1){
-			  qryset->qryscount = qryindex + 1;
-			  fprintf(stderr, "QRY MODIFIED %d\n", qryset->qryscount);
-			  break;
-			  }*/
 		}
-		//fprintf(stderr, "Iteration Finished Global - %d - Memory Allocation %fMB\n", *global, (double)(*global)*sizeof(saind_t)/(1024*1024));
-		//timer_start(&t);
-		//cudaMalloc((void**)&(ctx->blocks_d), (global)*sizeof(saind_t));
-		//cudaMemcpy(ctx->blocks_d, tmp_blocks, (global)*sizeof(saind_t), cudaMemcpyHostToDevice);
 		if(TEMPSET*(qryset->totaltokens) < *global){
 			fprintf(stderr, "ERROR! Memory Space Exceeded Inside GenerateBlocks! Fixable Problem.\n");
 			exit(0);
@@ -3123,7 +3044,6 @@ __global__ void extractConsistentPairs_Gappy(
 		qsort(fast_speed, lexicon_count, sizeof(red_dup_t), compareUser);
 
 		fprintf(stderr, "Create Lexincon DONE\n");
-		//free(tmp_blocks);
 
 		bool cpu = 0;
 		if (cpu){
@@ -3181,15 +3101,7 @@ __global__ void extractConsistentPairs_Gappy(
 			}
 
 			fprintf(stderr, "Start Print Grammar - GPU Mode\n");         
-			/*print_query_GPU(
-			  lexic,
-			  target_count, 
-			  foreig_count,
-			  qryglobal, 
-			  qryset->qryscount,
-			  globalOnPairsUpDown,
-			  fast_speed,
-			  isSample);*/
+
 		}	
 	}
 
@@ -3548,13 +3460,6 @@ void ExtractPairs_Large_Data_Gappy(void *handler,
 	////BASED ON TWO GAP SEED!! 
 	/////////////////////////////////////////
 
-	//debugging
-	/*	for(int i =0; i< qryset->distinctTwoGapCount;i++){
-		printf("EXtract: No. %d --> start %d|end %d\n", i, qryset->twoGapSearch[i].start_on_salist,
-		qryset->twoGapSearch[i].end_on_salist);
-		}*/		
-	///Debugging end
-
 	//Two gap search
 	cudaMalloc((void**)&(qryset_d->twoGapSearch), 
 			(qryset->distinctTwoGapCount)*sizeof(two_gappy_search));
@@ -3663,17 +3568,6 @@ void ExtractPairs_Large_Data_Gappy(void *handler,
 
 	cudaMalloc((void**)&(ref_source_d->precomp_onegap), ref_source->precomp_count*sizeof(precompute_enu_3));
 	cudaMemcpy(ref_source_d->precomp_onegap, ref_source->precomp_onegap, ref_source->precomp_count*sizeof(precompute_enu_3), cudaMemcpyHostToDevice);
-
-	///Debug
-	//cerr<<"Precomp count: "<<ref_source->precomp_count<<endl;
-	/*for(unsigned int yoshi = 0; yoshi < count; yoshi++){
-		if(ref_source->precomp_onegap[yoshi].start+ref_source->precomp_onegap[yoshi].length > 
-				ref_source->toklen || ref_source->precomp_onegap[yoshi].length <= 0 ){
-				printf("Not possible right before Extract One Gap Kernel!|index %d|end %d\n", 
-				yoshi, ref_source->precomp_onegap[yoshi].start+ref_source->precomp_onegap[yoshi].length);
-		}
-	}*/
-	//End of Debug
 
 	cudaMemGetInfo(&freeMem, &totalMem);  
 	fprintf(stderr, "Memory avaliable: Free: %lu, Total: %lu - Right before One Gap Kernel\n",freeMem/(1024*1024), totalMem/(1024*1024));
@@ -4333,125 +4227,5 @@ void ExtractPairs_Large_Data(void *handler,
 			fprintf(stderr, "CUDA error second After kernel extractGlobalPairsUpDown: %s -old \n", cudaGetErrorString(error1));
 			exit(-1);
 		}
-
-		//fprintf(stderr, "Start Print Grammar - GPU Mode\n");         
-		/*print_query_GPU_Continous(				
-				qryglobal, 
-				qryset->qryscount,
-				globalOnPairsUpDown,
-				fast_speed,
-				destDir,
-				isSample);*/
 	}	
 }
-
-
-
-
-/*
-map<string, categ> initWordPossibility_old(disk_handler_t *handler,
-		hashtbl* refstrid, 
-		hashtbl* targetstrid){
-
-	fprintf(stderr, "Start word possibility loading\n");
-	if (refstrid == NULL || targetstrid == NULL){
-		fprintf(stderr, "GO Ahead!\n");
-		exit(0);
-	}
-
-	map<string, categ> output;
-	int counter = 0;
-	FILE* fp = fopen(handler->wordpossibility, "r");
-
-
-	int qcount = 0;    
-	const char* delim = " ";	
-	char* line = NULL;	  
-	size_t len = 0;
-
-	while(getline(&line, &len, fp)!= -1){		
-		qcount++; 
-		size_t newbuflen = strlen(line);
-		if (line[newbuflen - 1] == '\n')
-			line[newbuflen - 1] = '\0';
-
-		////Ch
-		char* token = strtok(line, delim);		  
-		if (token==NULL || isspace(*token)){
-			printf("Not possible!\n");
-			exit(0);
-		}
-		struct my_struct *sss;
-		HASH_FIND_STR(refstrid, token, sss);
-		string chinese = string(token);
-		cout << "CH " <<chinese;
-		if(!sss){
-			if (chinese != "NULL"){ 				
-				//cout<< "Ch Not Available!!! " << chinese << " al " <<token <<endl; 
-				continue;
-			}
-		} 
-
-		////EN
-		token = strtok(NULL, delim);
-		if (token==NULL || isspace(*token)){
-			printf("Not possible!\n");
-			exit(0);
-		}
-		struct my_struct *sss1;
-		HASH_FIND_STR(refstrid, token, sss1);
-		string english = string(token);
-		cout << "EN " <<english;
-		if(!sss1){
-			if (english != "NULL"){ 			   
-				//cout<< "En Not Available!!! " << english << " al " <<token<<endl; 
-				continue;
-			}
-		}
-
-		////Val1
-		token = strtok(NULL, delim);
-		if (token==NULL || isspace(*token)){
-			printf("Not possible!\n");
-			exit(0);
-		}
-		float val1 = atof(token);			
-
-		///Val2
-		token = strtok(NULL, delim);
-		if (token==NULL || isspace(*token)){
-			printf("Not possible!\n");
-			exit(0);
-		}
-		float val2 = atof(token);
-		//cerr << "En " << <<endl;
-		/////Map generation
-		string key = "";
-		if (!sss && !sss1){
-			key = "-1|-1";
-		} else if (sss && !sss1) {
-			char buffer[200];
-			sprintf (buffer, "%d|-1", sss->id);
-			key = string(buffer);
-		} else if (!sss && sss1) {			  
-			char buffer[200];
-			sprintf (buffer, "-1|%d", sss1->id);
-			key = string(buffer);
-		} else {
-			char buffer[200];
-			sprintf(buffer, "%d|%d", sss->id, sss1->id);
-			key = string(buffer);
-		}
-		//cerr<<"get "<<key<<endl;
-		categ val;
-		val.val1 = val1;
-		val.val2 = val2;
-		output[key] = val;
-		counter++;
-	}
-
-	fclose(fp);
-	return output;
-
-}
-*/
